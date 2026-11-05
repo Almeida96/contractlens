@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "consumers": [
+    {
+      "name": "storefront-agent",
+      "operations": [
+        "POST /orders",
+        "GET /orders/{id}"
+      ]
+    },
+    {
+      "name": "fulfillment-worker",
+      "operations": [
+        "GET /orders/{id}"
+      ]
+    },
+    {
+      "name": "support-assistant",
+      "operations": [
+        "GET /orders/{id}",
+        "DELETE /orders/{id}"
+      ]
+    }
+  ]
+}
