@@ -43,6 +43,23 @@ class SpecTest {
   }
 
   @Test
+  void utf8BomDoesNotSwitchJsonToTheYamlParser() throws Exception {
+    Path file = directory.resolve("bom.json");
+    Files.writeString(file, "\ufeff" + BASE);
+    Spec valid = Spec.load(file);
+    assertEquals("3.1.0", valid.source().openapi());
+    assertEquals(Json.hash(Files.readAllBytes(file)), valid.source().sha256());
+
+    for (String invalid : new String[] {
+      BASE.replace("\"paths\":{}", "\"paths\":{},"),
+      BASE.replace("\"paths\":{}", "paths: {}")
+    }) {
+      Files.writeString(file, "\ufeff \n" + invalid);
+      assertThrows(Exception.class, () -> Spec.load(file), invalid);
+    }
+  }
+
+  @Test
   void rejectsYamlAliasExpansionAndOversizedInput() throws Exception {
     Path file = directory.resolve("aliases.yaml");
     Files.writeString(

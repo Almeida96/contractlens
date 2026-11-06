@@ -19,7 +19,10 @@ dependencies; the installed application and synthetic demo can run offline.
 The MCP client may send tool results to a model provider according to its own
 configuration. ContractLens cannot control that client's behavior.
 
-JSON/YAML parsing rejects duplicate mapping keys and multiple documents. YAML
+JSON/YAML parsing rejects duplicate mapping keys and multiple documents. A UTF-8
+byte order mark is accepted without relaxing JSON syntax: JSON objects and arrays
+still reject trailing commas and unquoted keys. Source hashes include the original
+bytes, including any byte order mark. YAML
 collection aliases are disabled. HTML rendering escapes all supplied contract
 text and does not load remote resources. Neither parser nor MCP executes code
 from a contract, example or description.

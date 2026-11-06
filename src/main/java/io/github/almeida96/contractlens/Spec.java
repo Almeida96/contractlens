@@ -65,7 +65,9 @@ public final class Spec {
     if (bytes.length == 0) throw new IllegalArgumentException("Specification is empty: " + path);
     // JSON is a YAML subset. Selecting JSON by its leading token retains strict JSON syntax.
     String text = new String(bytes, StandardCharsets.UTF_8);
-    String leading = text.stripLeading();
+    // Jackson accepts a UTF-8 BOM. Exclude it only from format detection so JSON cannot
+    // accidentally take YAML's more permissive syntax path; retain the original source hash.
+    String leading = (text.startsWith("\ufeff") ? text.substring(1) : text).stripLeading();
     ObjectMapper mapper = leading.startsWith("{") || leading.startsWith("[") ? Json.MAPPER : YAML;
     if (mapper == YAML) {
       // Jackson exposes aliases as scalar tokens instead of expanding them. Reject them
